@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="style.css">
 <script src="html2canvas.min.js"></script>
 <script src="assets/embedded-assets.js"></script>
-<script src="assets/bismi-1-default.js"></script>
 </head>
 <body>
 
@@ -102,87 +101,40 @@
       <thead>
         <tr><th colspan="2">ލިބުނު ފައިސާ</th></tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>ދައުލަތުން ދޭ ބްލޮކް ގްރާންޓް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>އަންހެނުންގެ ތަރައްޤީއަށް މަސައްކަތްކުރާ ކޮމިޓީގެ ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ކައުންސިލްގެ އާމްދަނީ ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ތިންވަނަ ފަރާތުގެ ފައިސާގެ ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ޕަބްލިކް އެކައުންޓް ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ޑޮނޭޝަން ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>އެހެނިހެން ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input received-input" value="0"></td>
+      <tbody id="receivedRows"></tbody>
+      <tfoot>
+        <tr class="add-row-tr no-export">
+          <td colspan="2"><button type="button" class="add-row-btn" data-table="received">+ ރޯއެއް އިތުރު ކުރުމަށް</button></td>
         </tr>
         <tr class="total-row">
           <td><strong>ޖުމްލަ</strong></td>
           <td><strong id="receivedTotalCell">0.00</strong></td>
         </tr>
-      </tbody>
+      </tfoot>
     </table>
 
     <table class="fund-table used-table">
       <thead>
         <tr><th colspan="2">ޚަރަދުވި ފައިސާ</th></tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>ދައުލަތުން ދޭ ބްލޮކް ގްރާންޓް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>އަންހެނުންގެ ތަރައްޤީއަށް މަސައްކަތްކުރާ ކޮމިޓީގެ ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ކައުންސިލްގެ އާމްދަނީ ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ތިންވަނަ ފަރާތުގެ ފައިސާގެ ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ޕަބްލިކް އެކައުންޓް ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>ޑޮނޭޝަން ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
-        </tr>
-        <tr>
-          <td>އެހެނިހެން ފަންޑް</td>
-          <td><input type="text" inputmode="decimal" class="amount-input used-input" value="0"></td>
+      <tbody id="usedRows"></tbody>
+      <tfoot>
+        <tr class="add-row-tr no-export">
+          <td colspan="2"><button type="button" class="add-row-btn" data-table="used">+ ރޯއެއް އިތުރު ކުރުމަށް</button></td>
         </tr>
         <tr class="total-row">
           <td><strong>ޖުމްލަ</strong></td>
           <td><strong id="usedTotalCell">0.00</strong></td>
         </tr>
-      </tbody>
+      </tfoot>
     </table>
 
   </section>
 
   <div class="actions no-export rtl-content" dir="rtl" lang="dv">
-    <button type="button" id="downloadImgBtn">ފޮޓޯއެއްގެ ގޮތުގައި ޑައުންލޯޑްކުރޭ</button>
-    <button type="button" id="resetBtn">ހުރިހާ އަދަދުތައް ރީސެޓް ކުރޭ</button>
+    <button type="button" id="downloadImgBtn">ފޮޓޯ ޑައުންލޯޑް ކުރުމަށް</button>
+    <button type="button" id="resetBtn">ހުރިހާ އަދަދެއް ރީސެޓް ކުރުމަށް</button>
+    <button type="button" id="restoreRowsBtn">ހުރިހާ ރޯވްސްތަށް ރީސެޓް ކޮށްލުމަށް</button>
   </div>
 
   <!-- ============ FOOTER ============ -->

@@ -264,12 +264,17 @@ body {
 
 .fund-table {
   width: 100%;
-  border-collapse: collapse;
+  /* Separate borders + rounded corner cells (instead of overflow: hidden)
+     so the row delete buttons can sit outside the table edge. */
+  border-collapse: separate;
+  border-spacing: 0;
   border-radius: 10px;
-  overflow: hidden;
   border: 1px solid var(--border);
   align-self: start;
 }
+.fund-table thead th { border-radius: 9px 9px 0 0; }
+.fund-table .total-row td:first-child { border-bottom-right-radius: 9px; }
+.fund-table .total-row td:last-child { border-bottom-left-radius: 9px; }
 
 .fund-table thead th {
   padding: 13px 14px;
@@ -281,18 +286,152 @@ body {
 .received-table thead th { background: var(--received-color); }
 .used-table thead th { background: var(--used-color); }
 
-.fund-table tbody td {
+.fund-table tbody td,
+.fund-table tfoot td {
   padding: 10px 14px;
   font-size: 16px;
   border-top: 1px solid var(--border);
 }
 
-.received-table tbody tr:nth-child(odd) td { background: var(--received-bg); }
-.received-table tbody tr:nth-child(even) td { background: var(--received-bg-alt); }
-.used-table tbody tr:nth-child(odd) td { background: var(--used-bg); }
-.used-table tbody tr:nth-child(even) td { background: var(--used-bg-alt); }
+/* Stripes alternate per fund group (set in script.js), so a row and its sub-rows share a colour. */
+.received-table tbody tr.stripe-odd td { background: var(--received-bg); }
+.received-table tbody tr.stripe-even td { background: var(--received-bg-alt); }
+.used-table tbody tr.stripe-odd td { background: var(--used-bg); }
+.used-table tbody tr.stripe-even td { background: var(--used-bg-alt); }
+.received-table { --tree-color: var(--received-color); }
+.used-table { --tree-color: var(--used-color); }
 
 .fund-table tbody td:first-child { width: 62%; }
+
+/* Editable row labels and their add/delete controls */
+.row-label {
+  display: inline-block;
+  min-width: 60px;
+  padding: 2px 4px;
+  border: 1px dashed transparent;
+  border-radius: 4px;
+  outline: none;
+}
+.row-label:hover { border-color: var(--border); }
+.row-label:focus { border-color: var(--brand-purple); background: #fff; }
+
+.row-controls {
+  display: inline-flex;
+  gap: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.fund-row:hover .row-controls,
+.fund-row:focus-within .row-controls { opacity: 1; }
+@media (hover: none) { .row-controls { opacity: 1; } }
+
+/* Row delete button: a red badge on the table's outer top corner of the row
+   (top-right on the received table, top-left on the used table). */
+.fund-row td { position: relative; }
+.row-del-btn {
+  position: absolute;
+  top: -9px;
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #d93838;
+  color: #fff;
+  font-size: 13px;
+  line-height: 15px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.received-table .row-del-btn { right: -11px; }
+.used-table .row-del-btn { left: -11px; }
+.fund-row:hover .row-del-btn,
+.fund-row:focus-within .row-del-btn { opacity: 1; }
+.row-del-btn:hover { background: #b51f1f; transform: scale(1.1); }
+@media (hover: none) { .row-del-btn { opacity: 1; } }
+
+.row-btn {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: pointer;
+  color: var(--ink);
+}
+.row-btn { direction: ltr; unicode-bidi: isolate; }
+.row-btn:hover { border-color: var(--brand-purple); color: var(--brand-purple); }
+
+/* Sub-rows: indented, slightly smaller; parent shows their sum */
+/* Physical "right" (not logical properties) because the tables are RTL and
+   html2canvas doesn't reliably support inset-inline-*/border-inline-*. */
+.fund-table .sub-row td {
+  font-size: 14px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
+.fund-table .sub-row td:first-child {
+  position: relative;
+  padding-right: 48px;
+  color: var(--muted);
+}
+/* Tree connector: vertical line down from the parent, tick into each sub-row. */
+.fund-table .sub-row td:first-child::before {
+  content: "";
+  position: absolute;
+  right: 24px;
+  top: 0;
+  bottom: 0;
+  border-right: 2px solid var(--tree-color);
+  opacity: 0.55;
+}
+.fund-table .sub-row.last-sub td:first-child::before { bottom: 50%; }
+.fund-table .sub-row td:first-child::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  width: 14px;
+  border-top: 2px solid var(--tree-color);
+  opacity: 0.55;
+}
+.fund-table .has-children td:first-child { position: relative; }
+.fund-table .has-children td:first-child::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  /* Only within the cell's bottom padding, so it never crosses a wrapped label. */
+  bottom: 0;
+  height: 8px;
+  border-right: 2px solid var(--tree-color);
+  opacity: 0.55;
+}
+.fund-table .sub-row .amount-input { font-size: 14px; padding: 5px 8px; }
+.row-sum {
+  display: block;
+  text-align: right;
+  font-weight: 600;
+  padding: 7px 10px;
+}
+
+.add-row-tr td { background: transparent !important; text-align: center !important; padding: 6px 14px !important; }
+.add-row-btn {
+  border: 1px dashed var(--border);
+  background: transparent;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.add-row-btn:hover { border-color: var(--brand-purple); color: var(--brand-purple); }
 
 .amount-input {
   width: 100%;
@@ -335,6 +474,8 @@ body {
 #downloadImgBtn:hover { background: #145f49; }
 #resetBtn { background: #eee7f0; color: var(--brand-purple-dark); }
 #resetBtn:hover { background: #e0d3e6; }
+#restoreRowsBtn { background: transparent; color: var(--muted); border: 1px solid var(--border); font-weight: 400; }
+#restoreRowsBtn:hover { color: var(--brand-purple-dark); border-color: var(--brand-purple); }
 
 /* ============ FOOTER ============ */
 
@@ -378,6 +519,10 @@ body {
 /* Applied via JS just before html2canvas snapshots the page, so the
    exported PNG shows a clean document instead of the editable UI chrome. */
 .page.capturing {
+  /* Fixed layout width so the exported image is the same on any screen size. */
+  width: 900px;
+  max-width: none;
+  box-sizing: border-box;
   box-shadow: none;
   border-radius: 0;
   padding: 10px 24px;
@@ -417,5 +562,7 @@ body {
 }
 
 .rtl-content .fund-table thead th { text-align: right; }
-.rtl-content .fund-table tbody td:first-child { text-align: right; }
+.rtl-content .fund-table tbody td:first-child,
+.rtl-content .fund-table tfoot td:first-child { text-align: right; }
+.capturing .row-label { border-color: transparent !important; background: transparent !important; }
 .rtl-content .meta-title input { font-size: 17px; }
